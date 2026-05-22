@@ -1,0 +1,29 @@
+seed: 42
+niterations: 2
+populations: 4
+parallelism: serial
+
+use_llm: false
+use_concepts: false
+use_concept_evolution: false
+llm_probability: 1.0e-4
+num_generated_equations: 2
+num_generated_concepts: 2
+num_pareto_context: 2
+max_concepts: 10
+is_parametric: false
+verbose: false
+
+model_name: gpt-4o-mini
+api_url: https://api.openai.com/v1
+api_key_env: OPENAI_API_KEY
+api_max_tokens: 1000
+llm_context_template: "We are searching for a symbolic regression equation over variables {variables}."
+
+binary_operators: ["+", "-", "*", "/"]
+unary_operators: ["sin", "cos", "exp", "log", "sqrt"]
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/sweep_short_20260518/lasr
+RUNTIME_ROOT: .pysr_runtime

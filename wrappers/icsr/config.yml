@@ -1,0 +1,42 @@
+seed: 42
+model_name: qwen3.5-plus
+api_base_url: ""
+force_openai_model: true
+iterations: 10
+tolerance: 0.99999
+prompt_size: 5
+max_retries: 5
+force_valid: false
+force_unique: false
+max_points_in_prompt: 40
+checkpoints: []
+
+seed_generation_tokens: 512
+seed_generation_max_tries: 10
+
+optimizer_threads: 5
+optimizer_timeout: 10
+optimizer_p0_min: -5
+optimizer_p0_max: 5
+optimizer_coeff_rounding: 4
+optimizer_tol: 1e-3
+
+temperature: 1.0
+temperature_schedule: false
+temperature_schedule_gamma: 0.995
+top_p: 0.9
+top_k: 60
+num_beams: 1
+max_new_tokens: 2048
+
+scorer_name: complexity_scorer
+scorer_rounding: 8
+scorer_scientific: false
+scorer_normalize: false
+scorer_lambda: 0.05
+scorer_max_nodes: 30
+scorer_alternative: false
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/icsr

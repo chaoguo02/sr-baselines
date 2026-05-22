@@ -1,0 +1,6 @@
+# LLM-SR baseline — needs upstream external/LLM-SR/
+# Also install external/LLM-SR/requirements.txt
+pyyaml>=6.0
+numpy>=1.24
+pandas>=2.0
+scipy>=1.11

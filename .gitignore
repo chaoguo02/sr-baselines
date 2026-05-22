@@ -1,0 +1,8 @@
+.env
+**/__pycache__/
+results/
+landscape_logs/
+
+# Upstream codebases (large, clone separately)
+external/
+.pysr_runtime/

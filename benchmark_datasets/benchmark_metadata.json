@@ -1,0 +1,192 @@
+[
+  {
+    "function_id": 1,
+    "name": "Nguyen-7",
+    "expression_x1x2": "log(x1 + 1) + log(x1^2 + 1)",
+    "n_variables": 1,
+    "train_range": [
+      0.0,
+      2.0
+    ],
+    "test_range": [
+      0.0,
+      2.0
+    ],
+    "n_train": 20,
+    "n_test": 100,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 2,
+    "name": "Keijzer-11",
+    "expression_x1x2": "(x1 * x2) + sin((x1 - 1) * (x2 - 1))",
+    "n_variables": 2,
+    "train_range": [
+      -1.0,
+      1.0
+    ],
+    "test_range": [
+      -1.0,
+      1.0
+    ],
+    "n_train": 25,
+    "n_test": 100,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 3,
+    "name": "Keijzer-14",
+    "expression_x1x2": "8.0 / (2 + x1^2 + x2^2)",
+    "n_variables": 2,
+    "train_range": [
+      -1.0,
+      1.0
+    ],
+    "test_range": [
+      -1.0,
+      1.0
+    ],
+    "n_train": 25,
+    "n_test": 100,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 4,
+    "name": "Pagie1",
+    "expression_x1x2": "1 / (1 + x1^-4) + 1 / (1 + x2^-4)",
+    "n_variables": 2,
+    "train_range": [
+      -5.0,
+      5.0
+    ],
+    "test_range": [
+      -5.0,
+      5.0
+    ],
+    "n_train": 625,
+    "n_test": 1000,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 5,
+    "name": "Keijzer1",
+    "expression_x1x2": "0.3 * x1 * sin(2 * pi * x1)",
+    "n_variables": 1,
+    "train_range": [
+      -1.0,
+      1.0
+    ],
+    "test_range": [
+      -1.1,
+      1.1
+    ],
+    "n_train": 20,
+    "n_test": 1000,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 6,
+    "name": "Koza2",
+    "expression_x1x2": "x1^5 - 2 * x1^3 + x1",
+    "n_variables": 1,
+    "train_range": [
+      -1.0,
+      1.0
+    ],
+    "test_range": [
+      -1.1,
+      1.1
+    ],
+    "n_train": 20,
+    "n_test": 1000,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 7,
+    "name": "Nonic",
+    "expression_x1x2": "sum(i=1..9, x1^i)",
+    "n_variables": 1,
+    "train_range": [
+      -2.0,
+      2.0
+    ],
+    "test_range": [
+      -2.2,
+      2.2
+    ],
+    "n_train": 20,
+    "n_test": 1000,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 8,
+    "name": "R1",
+    "expression_x1x2": "(x1 + 1)^3 / (x1^2 - x1 + 1)",
+    "n_variables": 1,
+    "train_range": [
+      -2.0,
+      2.0
+    ],
+    "test_range": [
+      -2.2,
+      2.2
+    ],
+    "n_train": 20,
+    "n_test": 1000,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 9,
+    "name": "R2",
+    "expression_x1x2": "(x1^5 - 3 * x1^3 + 1) / (x1^2 + 1)",
+    "n_variables": 1,
+    "train_range": [
+      -2.0,
+      2.0
+    ],
+    "test_range": [
+      -2.2,
+      2.2
+    ],
+    "n_train": 20,
+    "n_test": 1000,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 10,
+    "name": "Mod_quartic",
+    "expression_x1x2": "4 * x1^4 + 3 * x1^3 + 2 * x1^2 + x1",
+    "n_variables": 1,
+    "train_range": [
+      -2.0,
+      2.0
+    ],
+    "test_range": [
+      -2.2,
+      2.2
+    ],
+    "n_train": 20,
+    "n_test": 1000,
+    "train_sampling": "regular intervals",
+    "test_sampling": "random uniform",
+    "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  }
+]

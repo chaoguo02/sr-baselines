@@ -1,0 +1,21 @@
+seed: 42
+time: 30
+generations: -1
+evaluations: -1
+gomea: true
+gomfos: LT
+linearscaling: true
+functions: "+_-_*_p/_sqrt_plog"
+erc: true
+ims: "4_1"
+popsize: 64
+batchsize: 256
+initmaxtreeheight: 3
+maxtreeheight: 17
+maxsize: 1000
+parallel: 1
+silent: true
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/gp_gomea

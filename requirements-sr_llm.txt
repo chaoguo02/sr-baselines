@@ -1,0 +1,9 @@
+# SR-LLM baseline — needs upstream external/SR-LLM/ (conda env recommended)
+# See external/SR-LLM/environment.yml for full deps (torch, langchain, etc.)
+pyyaml>=6.0
+numpy>=1.24
+pandas>=2.0
+torch>=2.0
+langchain-core>=0.1
+langchain-community>=0.0.10
+openai>=1.0

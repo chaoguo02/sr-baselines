@@ -1,0 +1,7 @@
+# PySR baseline — needs Julia runtime bootstrap
+# After pip install, run: python -c "from pysr import PySRRegressor; m=PySRRegressor()"
+pyyaml>=6.0
+numpy>=1.24
+pandas>=2.0
+sympy>=1.12
+pysr>=0.17

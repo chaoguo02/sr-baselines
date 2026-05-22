@@ -1,0 +1,20 @@
+seed: 42
+use_api: true
+api_model: qwen3.5-plus
+api_base_url: ""
+max_sample_nums: 40
+samples_per_prompt: 4
+num_samplers: 1
+num_evaluators: 1
+evaluate_timeout_seconds: 30
+functions_per_prompt: 2
+num_islands: 8
+reset_period: 14400
+cluster_sampling_temperature_init: 0.1
+cluster_sampling_temperature_period: 30000
+max_nparams: 10
+raw_log_subdir: raw_logs
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/llm_sr

@@ -1,0 +1,20 @@
+seed: 42
+use_api: true
+api_model: qwen3.5-plus
+api_base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+max_sample_nums: 2
+samples_per_prompt: 1
+num_samplers: 1
+num_evaluators: 1
+evaluate_timeout_seconds: 30
+functions_per_prompt: 1
+num_islands: 2
+reset_period: 600
+cluster_sampling_temperature_init: 0.1
+cluster_sampling_temperature_period: 3000
+max_nparams: 6
+raw_log_subdir: raw_logs
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/llm_sr_smoke

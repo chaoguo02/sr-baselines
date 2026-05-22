@@ -1,0 +1,7 @@
+# ICSR baseline — needs upstream external/In-Context-Symbolic-Regression/
+# Also install external/In-Context-Symbolic-Regression/requirements.txt
+pyyaml>=6.0
+numpy>=1.24
+pandas>=2.0
+omegaconf>=2.3
+openai>=1.29

@@ -1,0 +1,28 @@
+seed: 42
+niterations: 50
+maxsize: 30
+population_size: 100
+populations: 15
+model_selection: best
+progress: false
+verbosity: 0
+deterministic: true
+procs: 0
+parallelism: serial
+
+binary_operators:
+  - "+"
+  - "-"
+  - "*"
+  - "/"
+
+unary_operators:
+  - "sin"
+  - "cos"
+  - "square(x) = x^2"
+  - "protect_sqrt(x) = sqrt(abs(x))"
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/pysr
+RUNTIME_ROOT: .pysr_runtime

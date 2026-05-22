@@ -1,0 +1,42 @@
+seed: 42
+model_name: qwen3.5-plus
+api_base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+force_openai_model: true
+iterations: 2
+tolerance: 0.99999
+prompt_size: 3
+max_retries: 3
+force_valid: false
+force_unique: false
+max_points_in_prompt: 20
+checkpoints: []
+
+seed_generation_tokens: 256
+seed_generation_max_tries: 4
+
+optimizer_threads: 2
+optimizer_timeout: 8
+optimizer_p0_min: -5
+optimizer_p0_max: 5
+optimizer_coeff_rounding: 4
+optimizer_tol: 1e-3
+
+temperature: 1.0
+temperature_schedule: false
+temperature_schedule_gamma: 0.995
+top_p: 0.9
+top_k: 60
+num_beams: 1
+max_new_tokens: 1024
+
+scorer_name: complexity_scorer
+scorer_rounding: 8
+scorer_scientific: false
+scorer_normalize: false
+scorer_lambda: 0.05
+scorer_max_nodes: 20
+scorer_alternative: false
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/sweep_short_20260518/icsr

@@ -1,0 +1,41 @@
+BENCHMARK_METADATA_PATH: "benchmark_datasets/benchmark_metadata.json"
+DATASET_PATH: "benchmark_datasets"
+OUTPUT_PATH: "results/sr_llm"
+
+use_rag: true
+memory_path: "baselines/external/SR-LLM/codes/ragLibrary/memory_general"
+seed: 100
+model_name: qwen3.5-plus
+n_epochs: 30
+n_evolutions: 5
+device: "cpu"
+
+target_name: "y"
+target_unit: [0, 0]
+target_description: "benchmark target variable"
+
+operator_tokens: ["add", "mul", "sub", "div", "n2", "sqrt", "sin", "cos", "exp", "log", "pow"]
+
+free_const_tokens: ["c_1", "c_2", "c_3"]
+free_const_units:
+  - [0, 0]
+  - [0, 0]
+  - [0, 0]
+free_const_descriptions:
+  - "free constant 1"
+  - "free constant 2"
+  - "free constant 3"
+free_const_bounds:
+  - [-10.0, 10.0]
+  - [-10.0, 10.0]
+  - [-10.0, 10.0]
+
+fixed_const_tokens: ["1"]
+fixed_const_values: [1.0]
+fixed_const_units:
+  - [0, 0]
+fixed_const_descriptions:
+  - "unitless constant one"
+
+address: "172.22.0.1"
+port: "7890"

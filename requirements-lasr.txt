@@ -1,0 +1,6 @@
+# LaSR baseline — needs Julia runtime + juliacall
+# Julia env: external/LibraryAugmentedSymbolicRegression.jl/ needs Pkg.instantiate()
+pyyaml>=6.0
+numpy>=1.24
+pandas>=2.0
+juliacall>=0.9

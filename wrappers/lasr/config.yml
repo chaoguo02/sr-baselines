@@ -1,0 +1,29 @@
+seed: 42
+niterations: 10
+populations: 10
+parallelism: serial
+
+use_llm: true
+use_concepts: true
+use_concept_evolution: true
+llm_probability: 1.0e-4
+num_generated_equations: 5
+num_generated_concepts: 5
+num_pareto_context: 5
+max_concepts: 30
+is_parametric: false
+verbose: false
+
+model_name: qwen3.5-plus
+api_url: ""
+api_key_env: DASHSCOPE_API_KEY
+api_max_tokens: 1000
+llm_context_template: "We are searching for a symbolic regression equation over variables {variables}."
+
+binary_operators: ["+", "-", "*", "/", "^"]
+unary_operators: ["sin", "cos", "exp", "log", "sqrt"]
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/lasr
+RUNTIME_ROOT: .pysr_runtime

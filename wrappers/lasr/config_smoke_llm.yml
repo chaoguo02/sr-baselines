@@ -1,0 +1,29 @@
+seed: 42
+niterations: 1
+populations: 2
+parallelism: serial
+
+use_llm: true
+use_concepts: false
+use_concept_evolution: false
+llm_probability: 1.0e-4
+num_generated_equations: 1
+num_generated_concepts: 1
+num_pareto_context: 1
+max_concepts: 5
+is_parametric: false
+verbose: false
+
+model_name: qwen3.5-plus
+api_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+api_key_env: OPENAI_API_KEY
+api_max_tokens: 512
+llm_context_template: "We are searching for a symbolic regression equation over variables {variables}."
+
+binary_operators: ["+", "-", "*", "/"]
+unary_operators: ["sin", "cos", "exp", "log", "sqrt"]
+
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/lasr_smoke_llm
+RUNTIME_ROOT: .pysr_runtime
