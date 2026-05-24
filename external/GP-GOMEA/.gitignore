@@ -1,0 +1,57 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.pyc
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Directories
+build/
+dist/
+data/
+cmake*
+
+# Other
+params_valgrind.txt
+stats_generations.txt
+result.txt
+.RData
+.Rhistory
+
+# IDE
+.idea/
+.vscode/
+
+# pycache
+*/__pycache__/
+pythonpkg/pyGPGOMEA/__pycache__*/
+pythonpkg/pyGPGOMEA/__pycache__*
+pythonpkg/pyGPGOMEA/__pycache__/*
+pythonpkg/pyGPGOMEA/__pycache__/

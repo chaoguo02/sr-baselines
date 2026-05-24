@@ -1,0 +1,34 @@
+[
+  {
+    "name": "LLM-SR",
+    "source_url": "https://github.com/deep-symbolic-mathematics/LLM-SR.git",
+    "local_path": "baselines/external/LLM-SR",
+    "status": "cloned",
+    "commit": "41c2123",
+    "notes": "Python project. Requires its own environment and prompt/data adapter."
+  },
+  {
+    "name": "In-Context-Symbolic-Regression",
+    "source_url": "https://github.com/merlerm/In-Context-Symbolic-Regression.git",
+    "local_path": "baselines/external/In-Context-Symbolic-Regression",
+    "status": "cloned",
+    "commit": "d44d26b",
+    "notes": "Python project with Hydra configs and LLM backend options."
+  },
+  {
+    "name": "LibraryAugmentedSymbolicRegression.jl",
+    "source_url": "https://github.com/trishullab/LibraryAugmentedSymbolicRegression.jl.git",
+    "local_path": "baselines/external/LibraryAugmentedSymbolicRegression.jl",
+    "status": "cloned",
+    "commit": "776196e",
+    "notes": "Julia project. Paper benchmark code appears to live in branch `lasr-experiments`."
+  },
+  {
+    "name": "LLM-Meta-SR",
+    "source_url": "https://anonymous.4open.science/r/LLM-Meta-SR",
+    "local_path": "baselines/external/LLM-Meta-SR",
+    "status": "blocked",
+    "commit": null,
+    "notes": "Clone failed because the remote currently returns repository not found."
+  }
+]

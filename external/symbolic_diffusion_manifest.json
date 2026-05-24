@@ -1,0 +1,8 @@
+{
+  "name": "Symbolic_Diffusion",
+  "requested_url": "https://github.com/rtymk/Symbolic_Diffusion.git",
+  "source_url": "https://github.com/rtymk/Symbolic_Diffusion.git",
+  "local_path": "baselines/external/Symbolic_Diffusion",
+  "status": "cloned",
+  "commit": "07439d1"
+}

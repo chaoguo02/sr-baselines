@@ -3,6 +3,5 @@
 results/
 landscape_logs/
 
-# Upstream codebases (large, clone separately)
-external/
+# PySR Julia runtime (auto-downloaded, machine-specific)
 .pysr_runtime/
