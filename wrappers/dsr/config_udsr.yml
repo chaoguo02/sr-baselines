@@ -1,0 +1,61 @@
+# uDSR (unified Deep Symbolic Regression) wrapper config
+# uDSR: Adds the LINEAR/poly token to DSR (NeurIPS 2022)
+
+# P 型
+mode: udsr
+
+# Paths
+DATASET_PATH: benchmark_datasets
+BENCHMARK_METADATA_PATH: benchmark_datasets/benchmark_metadata.json
+OUTPUT_PATH: results/udsr
+
+# Seed
+seed: 42
+
+# Training budget
+n_samples: 2000000
+batch_size: 1000
+epsilon: 0.05
+
+# Function set (uDSR includes "poly" token)
+function_set:
+  - add
+  - sub
+  - mul
+  - div
+  - sin
+  - cos
+  - exp
+  - log
+  - poly
+
+# Metric
+dso_metric: inv_nrmse
+dso_metric_params: [1.0]
+
+# Policy
+learning_rate: 0.0005
+entropy_weight: 0.03
+entropy_gamma: 0.7
+max_length: 64
+
+# Priors
+prior_length_min: 4
+prior_length_max: 64
+const_max_repeat: 3
+soft_length_loc: 10
+soft_length_scale: 5
+
+# GP meld (disabled for uDSR)
+run_gp_meld: false
+
+# Poly (LINEAR) token parameters
+poly_degree: 3
+poly_coef_tol: 1e-6
+poly_regressor: dso_least_squares
+
+# Misc
+n_cores_batch: 1
+early_stopping: true
+threshold: 1e-12
+protected: false

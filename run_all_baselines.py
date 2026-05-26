@@ -85,7 +85,7 @@ def _resolve_pysr_env(config):
     prepare_runtime_env(config)
 
 
-# --- Register all 7 baselines ---
+# --- Register all 9 baselines ---
 
 register(
     name="gplearn",
@@ -149,6 +149,24 @@ register(
     import_module="wrappers.gp_gomea.run",
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "gp_gomea", "config.yml"),
+    seed_key="seed",
+    align_overrides={},
+)
+
+register(
+    name="dsr",
+    import_module="wrappers.dsr.run",
+    train_one_name="train_one",
+    config_path=os.path.join("wrappers", "dsr", "config.yml"),
+    seed_key="seed",
+    align_overrides={},
+)
+
+register(
+    name="udsr",
+    import_module="wrappers.dsr.run",
+    train_one_name="train_one",
+    config_path=os.path.join("wrappers", "dsr", "config_udsr.yml"),
     seed_key="seed",
     align_overrides={},
 )

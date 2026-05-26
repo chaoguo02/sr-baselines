@@ -1,6 +1,6 @@
 # Qwen Symbolic Regression — 对比算法独立运行包
 
-本仓库包含 7 种符号回归（Symbolic Regression）对比算法的独立运行封装，与主实验仓库 `qwen_experiments/` 同级。
+本仓库包含 9 种符号回归（Symbolic Regression）对比算法的独立运行封装，与主实验仓库 `qwen_experiments/` 同级。
 
 ## 项目结构
 
@@ -13,7 +13,8 @@ qwen_experiments_deps/
 │   ├── sr_llm/                  # SR-LLM
 │   ├── lasr/                    # Library-Augmented Symbolic Regression
 │   ├── pysr/                    # PySR
-│   └── gp_gomea/                # GP-GOMEA
+│   ├── gp_gomea/                # GP-GOMEA
+│   └── dsr/                     # DSR / uDSR (Deep Symbolic Optimization)
 ├── gplearn/                     # gplearn 独立运行脚本（无 __init__.py）
 ├── utils/                       # 工具模块（自包含，独立于主实验）
 ├── external/                    # 上游代码库（需手动拉取，见 .gitignore）
@@ -36,6 +37,8 @@ qwen_experiments_deps/
 | **LaSR** | LLM + Julia | API+Julia | 是 (qwen3.5-plus) | Julia |
 | **PySR** | 遗传编程 | Julia | 否 | Julia |
 | **GP-GOMEA** | 传统 GP | CPU | 否 | C++ 编译 |
+| **DSR** | 深度 RL | GPU | 否 | PyTorch |
+| **uDSR** | 深度 RL + poly | GPU | 否 | PyTorch |
 
 ---
 

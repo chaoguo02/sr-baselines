@@ -1,0 +1,6 @@
+# DSR / uDSR baseline — PyTorch-based Deep Symbolic Optimization
+# After installing these deps, install the DSO package itself:
+#   pip install -e external/deep-symbolic-optimization-pytorch/dso
+pyyaml>=6.0
+numpy>=1.24
+pandas>=2.0

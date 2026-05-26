@@ -129,6 +129,25 @@ cd ..\..
 .\venv-gp_gomea\Scripts\python wrappers/gp_gomea/run.py --all
 ```
 
+### DSR / uDSR（基于 PyTorch 的深度符号回归）
+
+```powershell
+python -m venv venv-dsr
+.\venv-dsr\Scripts\pip install -r requirements-dsr.txt
+# 安装 DSO 包（包含 torch 等依赖）：
+.\venv-dsr\Scripts\pip install -e external/deep-symbolic-optimization-pytorch/dso
+
+# DSR 模式（ICLR 2021）：
+.\venv-dsr\Scripts\python wrappers/dsr/run.py --config wrappers/dsr/config.yml --function-id 1
+
+# uDSR 模式（NeurIPS 2022，含 poly token）：
+.\venv-dsr\Scripts\python wrappers/dsr/run.py --config wrappers/dsr/config_udsr.yml --function-id 1
+
+# 全量运行
+.\venv-dsr\Scripts\python wrappers/dsr/run.py --config wrappers/dsr/config.yml --all
+.\venv-dsr\Scripts\python wrappers/dsr/run.py --config wrappers/dsr/config_udsr.yml --all
+```
+
 ## 结果对比
 
 所有基线的输出使用统一的 schema（`utils/baseline_result_schema.py`），输出到各自 `OUTPUT_PATH` 下的 `run_summary.json`。最终汇总到 `results/all_baselines_summary.jsonl`。
