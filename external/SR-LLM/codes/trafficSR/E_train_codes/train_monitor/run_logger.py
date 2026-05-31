@@ -180,7 +180,7 @@ class RunLogger:
         # Update with current epoch info
         for i, c in enumerate(self.pareto_complexities):
             # Idx in batch of programs having complexity c
-            arg_have_c = np.argwhere(curr_complexities.round() == c)
+            arg_have_c = np.argwhere(curr_complexities.round() == c).flatten()
             if len(arg_have_c) > 0:
                 # Idx in batch of the program having complexity c and having max reward
                 arg_have_c_and_max = arg_have_c[curr_rewards[arg_have_c].argmax()]
@@ -188,7 +188,7 @@ class RunLogger:
                 max_r_at_c = curr_rewards[arg_have_c_and_max]
                 # If reward > currently max reward for this complexity or empty, replace
                 if self.pareto_rewards[i] <= max_r_at_c or np.isnan(self.pareto_rewards[i]):
-                    self.pareto_programs[i] = curr_batch.programs[arg_have_c_and_max[0]]
+                    self.pareto_programs[i] = curr_batch.programs[arg_have_c_and_max]
                     self.pareto_rewards[i] = max_r_at_c
 
     def get_pareto_front(self, ):

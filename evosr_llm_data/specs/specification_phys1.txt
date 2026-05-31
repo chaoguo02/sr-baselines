@@ -1,0 +1,9 @@
+### Problem Task
+Discover a mathematical function skeleton for a physics nonlinear harmonic oscillator system. Model the acceleration as a function of position and time.
+
+### Equation Input Specification
+- x: Position at time t
+- t: Time
+
+### Equation Output Specification
+dv_dt: Acceleration in nonlinear harmonic oscillator

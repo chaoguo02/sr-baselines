@@ -1,0 +1,9 @@
+### Problem Task
+Discover a mathematical function skeleton for a materials stress system. Model stress as a function of strain and temperature.
+
+### Equation Input Specification
+- epsilon: Engineering strain observations
+- T: Temperature observations
+
+### Equation Output Specification
+sigma: Stress (resulting stress computed from the function)

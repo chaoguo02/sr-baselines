@@ -1,0 +1,103 @@
+{
+  "_comment": "Metadata for all EvoSR-LLM datasets. Last column is always the target (y).",
+  "llm_srbench_data": {
+    "bio0": {
+      "columns": ["t", "P", "dP_dt"],
+      "input_cols": ["t", "P"],
+      "target_col": "dP_dt",
+      "n_variables": 2,
+      "domain": "biology",
+      "description": "Bacterial growth ODE: dP/dt = f(t, P)"
+    },
+    "bio1": {
+      "columns": ["t", "P", "dP_dt"],
+      "input_cols": ["t", "P"],
+      "target_col": "dP_dt",
+      "n_variables": 2,
+      "domain": "biology",
+      "description": "Bacterial growth ODE: dP/dt = f(t, P)"
+    },
+    "chem0": {
+      "columns": ["t", "A", "dA_dt"],
+      "input_cols": ["t", "A"],
+      "target_col": "dA_dt",
+      "n_variables": 2,
+      "domain": "chemistry",
+      "description": "Chemical reaction ODE: dA/dt = f(t, A)"
+    },
+    "chem1": {
+      "columns": ["t", "A", "dA_dt"],
+      "input_cols": ["t", "A"],
+      "target_col": "dA_dt",
+      "n_variables": 2,
+      "domain": "chemistry",
+      "description": "Chemical reaction ODE: dA/dt = f(t, A)"
+    },
+    "matsci0": {
+      "columns": ["epsilon", "T", "sigma"],
+      "input_cols": ["epsilon", "T"],
+      "target_col": "sigma",
+      "n_variables": 2,
+      "domain": "materials_science",
+      "description": "Stress-strain constitutive law: sigma = f(epsilon, T)"
+    },
+    "matsci1": {
+      "columns": ["epsilon", "T", "sigma"],
+      "input_cols": ["epsilon", "T"],
+      "target_col": "sigma",
+      "n_variables": 2,
+      "domain": "materials_science",
+      "description": "Stress-strain constitutive law: sigma = f(epsilon, T)"
+    },
+    "phys0": {
+      "columns": ["x", "t", "v", "dv_dt"],
+      "input_cols": ["x", "t", "v"],
+      "target_col": "dv_dt",
+      "n_variables": 3,
+      "domain": "physics",
+      "description": "Damped oscillator ODE: dv/dt = f(x, t, v)"
+    },
+    "phys1": {
+      "columns": ["x", "t", "dv_dt"],
+      "input_cols": ["x", "t"],
+      "target_col": "dv_dt",
+      "n_variables": 2,
+      "domain": "physics",
+      "description": "Simplified oscillator ODE: dv/dt = f(x, t)"
+    }
+  },
+  "oes_data": {
+    "bactgrow": {
+      "columns": ["b", "s", "temp", "pH", "r"],
+      "input_cols": ["b", "s", "temp", "pH"],
+      "target_col": "r",
+      "n_variables": 4,
+      "domain": "biology",
+      "description": "Bacterial growth rate: r = f(b, s, temp, pH)"
+    },
+    "oscillator1": {
+      "columns": ["x", "v", "a"],
+      "input_cols": ["x", "v"],
+      "target_col": "a",
+      "n_variables": 2,
+      "domain": "physics",
+      "description": "Oscillator acceleration: a = f(x, v)"
+    },
+    "oscillator2": {
+      "columns": ["t", "x", "v", "a"],
+      "input_cols": ["t", "x", "v"],
+      "target_col": "a",
+      "n_variables": 3,
+      "domain": "physics",
+      "description": "Oscillator acceleration: a = f(t, x, v)"
+    },
+    "stressstrain": {
+      "columns": ["a", "temp", "s"],
+      "input_cols": ["a", "temp"],
+      "target_col": "s",
+      "n_variables": 2,
+      "domain": "materials_science",
+      "description": "Stress-strain relationship: s = f(a, temp)"
+    }
+  }
+}

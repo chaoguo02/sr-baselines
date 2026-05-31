@@ -13,7 +13,7 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
-from utils.data_loader import load_data
+from utils.data_loader import load_data, resolve_evosr
 from utils.baseline_result_schema import apply_rag_sr_result_schema
 from utils.readAndwrite import append_jsonl, write_json
 
@@ -90,8 +90,10 @@ def ensure_output_dir(path):
 def train_one(function_id, metadata, config):
     dataset_dir = resolve_path(config["DATASET_PATH"])
     output_root = resolve_path(config["OUTPUT_PATH"])
-    file_paths = build_file_paths(dataset_dir, function_id)
-    X_train, y_train, X_test, y_test = load_data(file_paths)
+    meta_entry = metadata[function_id]
+    fp_e, inp, tgt = resolve_evosr(meta_entry, config)
+    file_paths = fp_e if fp_e else build_file_paths(dataset_dir, function_id)
+    X_train, y_train, X_test, y_test = load_data(file_paths, inp, tgt)
 
     n_variables = int(metadata[function_id]["n_variables"])
     X_train = select_features(X_train, n_variables)

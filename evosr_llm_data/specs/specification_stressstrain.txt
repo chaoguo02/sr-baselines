@@ -1,0 +1,9 @@
+### Problem Task
+Find the mathematical function skeleton that represents stress, given data on strain and temperature in an Aluminium rod across elastic and plastic regions.
+
+### Equation Input Specification
+- a: Observations of strain
+- temp: Observations of temperature
+
+### Equation Output Specification
+s: Stress computed from the function

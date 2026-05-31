@@ -387,6 +387,7 @@ def main():
 
                 if result.get("status") == "failed":
                     print("FAILED")
+                    ensure_dir(func_run_dir)
                     error_path = os.path.join(func_run_dir, "run_error.json")
                     with open(error_path, "w", encoding="utf-8") as f:
                         json.dump(result, f, ensure_ascii=False, indent=2)

@@ -71,7 +71,20 @@ def get_api_key(config):
     return api_key
 
 
-def load_xy(dataset_root, function_id, n_variables):
+def load_xy(dataset_root, function_id, n_variables, meta_entry=None):
+    from utils.data_loader import resolve_evosr, load_data as _ld
+    fp_e, inp, tgt = resolve_evosr(meta_entry) if meta_entry else (None, None, None)
+    if fp_e:
+        Xtr, ytr, Xte, yte = _ld(fp_e, inp, tgt)
+        # Build DataFrames with consistent column naming
+        nv = Xtr.shape[1]
+        cols = [f"x{i+1}" for i in range(nv)]
+        df_tr = pd.DataFrame(Xtr, columns=cols)
+        df_tr["y"] = ytr
+        df_te = pd.DataFrame(Xte, columns=cols)
+        df_te["y"] = yte
+        return df_tr, df_te, fp_e["train_data"], fp_e["test_data"], cols
+
     train_path = os.path.join(dataset_root, f"fitness_cases{function_id}.csv")
     test_path = os.path.join(dataset_root, f"hold_out{function_id}.csv")
 
@@ -173,6 +186,7 @@ def train_one(function_id, metadata, config):
         dataset_root=dataset_root,
         function_id=function_id,
         n_variables=meta["n_variables"],
+        meta_entry=meta,
     )
     train_csv = os.path.join(raw_input_dir, "train.csv")
     test_csv = os.path.join(raw_input_dir, "test.csv")

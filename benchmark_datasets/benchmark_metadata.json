@@ -188,5 +188,152 @@
     "train_sampling": "regular intervals",
     "test_sampling": "random uniform",
     "x_mapping": "table x -> x1, table y -> x2; one-variable functions use x2 = 0.0"
+  },
+  {
+    "function_id": 11,
+    "name": "bio0",
+    "n_variables": 2,
+    "input_cols": [
+      "t",
+      "A"
+    ],
+    "target_col": "dA_dt",
+    "dataset_source": "evosr_llm",
+    "data_group": "llm_srbench_data"
+  },
+  {
+    "function_id": 12,
+    "name": "bio1",
+    "n_variables": 2,
+    "input_cols": [
+      "t",
+      "A"
+    ],
+    "target_col": "dA_dt",
+    "dataset_source": "evosr_llm",
+    "data_group": "llm_srbench_data"
+  },
+  {
+    "function_id": 13,
+    "name": "chem0",
+    "n_variables": 2,
+    "input_cols": [
+      "t",
+      "A"
+    ],
+    "target_col": "dA_dt",
+    "dataset_source": "evosr_llm",
+    "data_group": "llm_srbench_data"
+  },
+  {
+    "function_id": 14,
+    "name": "chem1",
+    "n_variables": 2,
+    "input_cols": [
+      "t",
+      "A"
+    ],
+    "target_col": "dA_dt",
+    "dataset_source": "evosr_llm",
+    "data_group": "llm_srbench_data"
+  },
+  {
+    "function_id": 15,
+    "name": "matsci0",
+    "n_variables": 2,
+    "input_cols": [
+      "T",
+      "V"
+    ],
+    "target_col": "P",
+    "dataset_source": "evosr_llm",
+    "data_group": "llm_srbench_data"
+  },
+  {
+    "function_id": 16,
+    "name": "matsci1",
+    "n_variables": 2,
+    "input_cols": [
+      "T",
+      "V"
+    ],
+    "target_col": "P",
+    "dataset_source": "evosr_llm",
+    "data_group": "llm_srbench_data"
+  },
+  {
+    "function_id": 17,
+    "name": "phys0",
+    "n_variables": 3,
+    "input_cols": [
+      "lambda",
+      "T"
+    ],
+    "target_col": "P",
+    "dataset_source": "evosr_llm",
+    "data_group": "llm_srbench_data"
+  },
+  {
+    "function_id": 18,
+    "name": "phys1",
+    "n_variables": 2,
+    "input_cols": [
+      "t",
+      "P"
+    ],
+    "target_col": "V",
+    "dataset_source": "evosr_llm",
+    "data_group": "llm_srbench_data"
+  },
+  {
+    "function_id": 19,
+    "name": "bactgrow",
+    "n_variables": 4,
+    "input_cols": [
+      "b",
+      "s",
+      "temp",
+      "pH"
+    ],
+    "target_col": "pop",
+    "dataset_source": "oes_llm",
+    "data_group": "oes_data"
+  },
+  {
+    "function_id": 20,
+    "name": "oscillator1",
+    "n_variables": 2,
+    "input_cols": [
+      "t",
+      "x"
+    ],
+    "target_col": "y",
+    "dataset_source": "oes_llm",
+    "data_group": "oes_data"
+  },
+  {
+    "function_id": 21,
+    "name": "oscillator2",
+    "n_variables": 3,
+    "input_cols": [
+      "t",
+      "x",
+      "y"
+    ],
+    "target_col": "z",
+    "dataset_source": "oes_llm",
+    "data_group": "oes_data"
+  },
+  {
+    "function_id": 22,
+    "name": "stressstrain",
+    "n_variables": 2,
+    "input_cols": [
+      "eps",
+      "sigma"
+    ],
+    "target_col": "E",
+    "dataset_source": "oes_llm",
+    "data_group": "oes_data"
   }
 ]

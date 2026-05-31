@@ -48,7 +48,11 @@ def ensure_output_dir(path):
     os.makedirs(path, exist_ok=True)
 
 
-def load_xy(dataset_root, function_id, n_variables):
+def load_xy(dataset_root, function_id, n_variables, meta_entry=None):
+    from utils.data_loader import resolve_evosr, load_data as _ld
+    fp_e, inp, tgt = resolve_evosr(meta_entry) if meta_entry else (None, None, None)
+    if fp_e:
+        return _ld(fp_e, inp, tgt) + (fp_e["train_data"], fp_e["test_data"])
     train_path = os.path.join(dataset_root, f"fitness_cases{function_id}.csv")
     test_path = os.path.join(dataset_root, f"hold_out{function_id}.csv")
 
@@ -307,7 +311,8 @@ def fit_best_program(function_code, specification, x_train, y_train, x_test, y_t
     }
 
 
-def train_one(function_id, metadata, cfg):
+def train_one(function_id, metadata, config):
+    cfg = config  # alias for backward compatibility with function body
     # Force UTF-8 for stdout to prevent GBK crashes on Windows when upstream prints
     try:
         import sys, io
@@ -334,6 +339,7 @@ def train_one(function_id, metadata, cfg):
         dataset_root=dataset_root,
         function_id=function_id,
         n_variables=meta["n_variables"],
+        meta_entry=meta,
     )
 
     specification = build_specification(meta["n_variables"], cfg.get("max_nparams", 10))

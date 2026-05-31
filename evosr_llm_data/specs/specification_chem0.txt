@@ -1,0 +1,9 @@
+### Problem Task
+Discover a mathematical function skeleton for a chemistry reaction kinetics system. Model the rate of change of concentration as a function of time and current concentration.
+
+### Equation Input Specification
+- t: Time
+- A: Concentration of species A
+
+### Equation Output Specification
+dA_dt: Rate of change of concentration

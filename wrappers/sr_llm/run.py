@@ -43,7 +43,13 @@ def ensure_output_dir(path):
     os.makedirs(path, exist_ok=True)
 
 
-def load_xy(dataset_root, function_id, n_variables):
+def load_xy(dataset_root, function_id, n_variables, meta_entry=None):
+    from utils.data_loader import resolve_evosr, load_data as _ld
+    fp_e, inp, tgt = resolve_evosr(meta_entry) if meta_entry else (None, None, None)
+    if fp_e:
+        Xtr, ytr, Xte, yte = _ld(fp_e, inp, tgt)
+        vn = inp if isinstance(inp, list) else list(inp)
+        return Xtr, ytr, Xte, yte, fp_e["train_data"], fp_e["test_data"], vn
     train_path = os.path.join(dataset_root, f"fitness_cases{function_id}.csv")
     test_path = os.path.join(dataset_root, f"hold_out{function_id}.csv")
 
@@ -71,6 +77,12 @@ def load_xy(dataset_root, function_id, n_variables):
 def _add_langchain_compat():
     """Add compatibility shims so upstream SR-LLM can import old langchain APIs."""
     import types
+    # Stub top-level langchain module so dotted-path imports resolve
+    if "langchain" not in sys.modules:
+        _top = types.ModuleType("langchain")
+        _top.__path__ = []
+        _top.__package__ = "langchain"
+        sys.modules["langchain"] = _top
     import langchain_community.callbacks
     _lc_callbacks = types.ModuleType("langchain.callbacks")
     _lc_callbacks.OpenAICallbackHandler = langchain_community.callbacks.OpenAICallbackHandler
@@ -86,11 +98,16 @@ def _add_langchain_compat():
     _lc_schema.__package__ = "langchain.schema"
     sys.modules["langchain.schema"] = _lc_schema
 
-    # Also shim ChatOpenAI which moved to langchain_community in v1.x
-    try:
-        from langchain_community.chat_models import ChatOpenAI as _ChatOpenAI
-    except ImportError:
-        _ChatOpenAI = None
+    # Also shim ChatOpenAI which moved to langchain_community in v1.x, then to langchain_openai
+    _ChatOpenAI = None
+    for _mod_name in ("langchain_community.chat_models", "langchain_openai"):
+        try:
+            _mod = __import__(_mod_name, fromlist=["ChatOpenAI"])
+            _ChatOpenAI = getattr(_mod, "ChatOpenAI", None)
+            if _ChatOpenAI:
+                break
+        except ImportError:
+            continue
     if _ChatOpenAI:
         _lc_chat = types.ModuleType("langchain.chat_models")
         _lc_chat.ChatOpenAI = _ChatOpenAI
@@ -125,7 +142,7 @@ def import_sr_llm(model_name="gpt-4o-mini"):
         def _patched_init(self, *args, **kwargs):
             _orig_init(self, *args, **kwargs)
             # Override model type assertion; the actual model is determined by api_base
-            self.model_type = model_name  # from wrapper_cfg, default qwen3.5-plus
+            self.model_type = model_name  # from config, default qwen3.5-plus
             # Override the hardcoded base_url in the ChatOpenAI client
             # (upstream code uses a hardcoded proxy endpoint, but we need the Qwen-compatible API)
             if _base_url and hasattr(self, 'llm'):
@@ -200,34 +217,34 @@ def build_variable_descriptions(variable_names, function_name):
     return descriptions
 
 
-def parse_operator_tokens(wrapper_cfg):
+def parse_operator_tokens(config):
     return list(
-        wrapper_cfg.get(
+        config.get(
             "operator_tokens",
             ["add", "mul", "sub", "div", "n2", "sqrt", "sin", "cos", "exp", "log", "pow"],
         )
     )
 
 
-def parse_free_const_setup(wrapper_cfg):
-    tokens = list(wrapper_cfg.get("free_const_tokens", ["c_1", "c_2", "c_3"]))
-    units = list(wrapper_cfg.get("free_const_units", [[0, 0] for _ in tokens]))
+def parse_free_const_setup(config):
+    tokens = list(config.get("free_const_tokens", ["c_1", "c_2", "c_3"]))
+    units = list(config.get("free_const_units", [[0, 0] for _ in tokens]))
     descriptions = list(
-        wrapper_cfg.get(
+        config.get(
             "free_const_descriptions",
             [f"free constant {idx + 1}" for idx in range(len(tokens))],
         )
     )
-    bounds = list(wrapper_cfg.get("free_const_bounds", [[-10.0, 10.0] for _ in tokens]))
+    bounds = list(config.get("free_const_bounds", [[-10.0, 10.0] for _ in tokens]))
     return tokens, units, descriptions, bounds
 
 
-def parse_fixed_const_setup(wrapper_cfg):
-    tokens = list(wrapper_cfg.get("fixed_const_tokens", ["1"]))
-    values = list(wrapper_cfg.get("fixed_const_values", [1.0 for _ in tokens]))
-    units = list(wrapper_cfg.get("fixed_const_units", [[0, 0] for _ in tokens]))
+def parse_fixed_const_setup(config):
+    tokens = list(config.get("fixed_const_tokens", ["1"]))
+    values = list(config.get("fixed_const_values", [1.0 for _ in tokens]))
+    units = list(config.get("fixed_const_units", [[0, 0] for _ in tokens]))
     descriptions = list(
-        wrapper_cfg.get(
+        config.get(
             "fixed_const_descriptions",
             [f"fixed constant {idx + 1}" for idx in range(len(tokens))],
         )
@@ -235,19 +252,19 @@ def parse_fixed_const_setup(wrapper_cfg):
     return tokens, values, units, descriptions
 
 
-def train_one(function_id, metadata, wrapper_cfg):
+def train_one(function_id, metadata, config):
     load_env_file()
-    use_rag = bool(wrapper_cfg.get("use_rag", True))
+    use_rag = bool(config.get("use_rag", True))
     if use_rag and not resolve_api_key("OPENAI_API_KEY", "API_KEY", "DASHSCOPE_API_KEY"):
         raise RuntimeError(
             "SR-LLM is configured with `use_rag: true`, but no API key was found. "
             "Checked `OPENAI_API_KEY`, `API_KEY`, and `DASHSCOPE_API_KEY`."
         )
 
-    model_name = str(wrapper_cfg.get("model_name", "qwen3.5-plus"))
+    model_name = str(config.get("model_name", "qwen3.5-plus"))
     general_symbolic_regression, torch = import_sr_llm(model_name=model_name)
-    dataset_root = resolve_path(wrapper_cfg["DATASET_PATH"])
-    output_root = resolve_path(wrapper_cfg["OUTPUT_PATH"])
+    dataset_root = resolve_path(config["DATASET_PATH"])
+    output_root = resolve_path(config["OUTPUT_PATH"])
     func_output_dir = os.path.join(output_root, f"func{function_id}")
     ensure_output_dir(func_output_dir)
 
@@ -256,15 +273,16 @@ def train_one(function_id, metadata, wrapper_cfg):
         dataset_root=dataset_root,
         function_id=function_id,
         n_variables=meta["n_variables"],
+        meta_entry=meta,
     )
 
     variable_units = [[0, 0] for _ in variable_names]
     variable_descriptions = build_variable_descriptions(variable_names, meta["name"])
     free_const_tokens, free_const_units, free_const_descriptions, free_const_bounds = parse_free_const_setup(
-        wrapper_cfg
+        config
     )
     fixed_const_tokens, fixed_const_values, fixed_const_units, fixed_const_descriptions = parse_fixed_const_setup(
-        wrapper_cfg
+        config
     )
     memory_path = resolve_deps_path("external", "SR-LLM", "codes/ragLibrary/memory_general")
 
@@ -272,10 +290,10 @@ def train_one(function_id, metadata, wrapper_cfg):
         "variable_names": variable_names,
         "variable_units": variable_units,
         "variable_descriptions": variable_descriptions,
-        "target_name": str(wrapper_cfg.get("target_name", "y")),
-        "target_unit": list(wrapper_cfg.get("target_unit", [0, 0])),
-        "target_description": str(wrapper_cfg.get("target_description", "benchmark target variable")),
-        "operator_tokens": parse_operator_tokens(wrapper_cfg),
+        "target_name": str(config.get("target_name", "y")),
+        "target_unit": list(config.get("target_unit", [0, 0])),
+        "target_description": str(config.get("target_description", "benchmark target variable")),
+        "operator_tokens": parse_operator_tokens(config),
         "free_const_tokens": free_const_tokens,
         "free_const_units": free_const_units,
         "free_const_descriptions": free_const_descriptions,
@@ -286,10 +304,10 @@ def train_one(function_id, metadata, wrapper_cfg):
         "fixed_const_descriptions": fixed_const_descriptions,
         "use_rag": use_rag,
         "memory_path": memory_path,
-        "seed": int(wrapper_cfg.get("seed", 100)),
-        "n_epochs": int(wrapper_cfg.get("n_epochs", 30)),
-        "n_evolutions": int(wrapper_cfg.get("n_evolutions", 5)),
-        "device": str(wrapper_cfg.get("device", "cpu")),
+        "seed": int(config.get("seed", 100)),
+        "n_epochs": int(config.get("n_epochs", 30)),
+        "n_evolutions": int(config.get("n_evolutions", 5)),
+        "device": str(config.get("device", "cpu")),
     }
     write_json(os.path.join(func_output_dir, "generated_inputs.json"), input_manifest)
 
@@ -319,8 +337,8 @@ def train_one(function_id, metadata, wrapper_cfg):
         use_rag=use_rag,
         memory_path=memory_path,
         device=input_manifest["device"],
-        address=str(wrapper_cfg.get("address", "172.22.0.1")),
-        port=str(wrapper_cfg.get("port", "7890")),
+        address=str(config.get("address", "172.22.0.1")),
+        port=str(config.get("port", "7890")),
     )
     runtime_seconds = time.time() - start
     new_run_dirs = detect_new_run_dirs(before_snapshot)
@@ -375,8 +393,8 @@ def parse_args():
 
 def main():
     args = parse_args()
-    wrapper_cfg = load_yaml(resolve_path(args.config))
-    metadata = load_metadata(resolve_path(wrapper_cfg["BENCHMARK_METADATA_PATH"]))
+    config = load_yaml(resolve_path(args.config))
+    metadata = load_metadata(resolve_path(config["BENCHMARK_METADATA_PATH"]))
 
     if args.all:
         function_ids = sorted(metadata.keys())
@@ -387,7 +405,7 @@ def main():
     else:
         raise ValueError("Please provide --function-id N or use --all.")
 
-    output_root = resolve_path(wrapper_cfg["OUTPUT_PATH"])
+    output_root = resolve_path(config["OUTPUT_PATH"])
     ensure_output_dir(output_root)
     summary_path = os.path.join(output_root, "summary.jsonl")
 
@@ -395,7 +413,7 @@ def main():
     try:
         for function_id in function_ids:
             print(f"[SR-LLM] Running func{function_id} ({metadata[function_id]['name']})")
-            result = train_one(function_id=function_id, metadata=metadata, wrapper_cfg=wrapper_cfg)
+            result = train_one(function_id=function_id, metadata=metadata, config=config)
             all_results.append(result)
             print(
                 f"[SR-LLM] func{function_id} done | "

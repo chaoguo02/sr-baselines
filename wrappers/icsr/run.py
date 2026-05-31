@@ -51,7 +51,12 @@ def ensure_output_dir(path):
     os.makedirs(path, exist_ok=True)
 
 
-def load_xy(dataset_root, function_id, n_variables):
+def load_xy(dataset_root, function_id, n_variables, meta_entry=None):
+    from utils.data_loader import resolve_evosr, load_data as _ld
+    fp_e, inp, tgt = resolve_evosr(meta_entry) if meta_entry else (None, None, None)
+    if fp_e:
+        return _ld(fp_e, inp, tgt) + (fp_e["train_data"], fp_e["test_data"])
+
     train_path = os.path.join(dataset_root, f"fitness_cases{function_id}.csv")
     test_path = os.path.join(dataset_root, f"hold_out{function_id}.csv")
 
@@ -143,11 +148,11 @@ def import_icsr_modules():
     return module.Workspace, icsr_utils
 
 
-def prepare_api_environment(wrapper_cfg):
+def prepare_api_environment(config):
     load_env_file()
     api_key = resolve_api_key("DASHSCOPE_API_KEY", "OPENAI_API_KEY", "API_KEY")
     api_base_url = resolve_api_base_url(
-        wrapper_cfg.get("api_base_url"),
+        config.get("api_base_url"),
         "https://api.openai.com/v1",
         "OPENAI_BASE_URL",
         "QWEN_BASE_URL",
@@ -155,6 +160,7 @@ def prepare_api_environment(wrapper_cfg):
     if api_key:
         os.environ["OPENAI_API_KEY"] = api_key
     os.environ["ICSR_OPENAI_BASE_URL"] = api_base_url
+    os.environ["OPENAI_BASE_URL"] = api_base_url
     return api_key, os.environ["ICSR_OPENAI_BASE_URL"]
 
 
@@ -177,11 +183,16 @@ def patch_openai_model():
         self.organization_id = self.get_org_id()
         assert self.api_key is not None, "API key not found."
 
+        import os as _os
+        _debug_url = _os.environ.get("ICSR_OPENAI_BASE_URL", "NOT_SET")
+        print(f"[ICSR-DEBUG] OPENAI_API_KEY set: {bool(_os.environ.get('OPENAI_API_KEY'))}", flush=True)
+        print(f"[ICSR-DEBUG] ICSR_OPENAI_BASE_URL={_debug_url}", flush=True)
+
         client_kwargs = {
             "api_key": self.api_key,
             "organization": self.organization_id,
         }
-        base_url = os.environ.get("ICSR_OPENAI_BASE_URL")
+        base_url = _os.environ.get("ICSR_OPENAI_BASE_URL")
         if base_url:
             client_kwargs["base_url"] = base_url
         self.client = openai.Client(**client_kwargs)
@@ -196,12 +207,12 @@ def patch_openai_model():
     openai_model.OpenAIModel.__init__ = wrapped_init
 
 
-def patch_utils_load_model(icsr_utils, wrapper_cfg):
+def patch_utils_load_model(icsr_utils, config):
     original_load_model = icsr_utils.load_model
     if getattr(original_load_model, "_icsr_wrapper_patched", False):
         return
 
-    force_openai_model = bool(wrapper_cfg.get("force_openai_model", False))
+    force_openai_model = bool(config.get("force_openai_model", False))
 
     def wrapped_load_model(model_name, device, dtype, cache_dir=None, model_args=None):
         model_args = model_args or {}
@@ -215,19 +226,19 @@ def patch_utils_load_model(icsr_utils, wrapper_cfg):
     icsr_utils.load_model = wrapped_load_model
 
 
-def build_cfg(wrapper_cfg, function_id, meta, data_folder_rel):
+def build_cfg(config, function_id, meta, data_folder_rel):
     return OmegaConf.create(
         {
-            "output_dir": wrapper_cfg.get("OUTPUT_PATH", "baselines/results/icsr"),
-            "max_retries": int(wrapper_cfg.get("max_retries", 5)),
-            "force_valid": bool(wrapper_cfg.get("force_valid", False)),
-            "force_unique": bool(wrapper_cfg.get("force_unique", False)),
+            "output_dir": config.get("OUTPUT_PATH", "baselines/results/icsr"),
+            "max_retries": int(config.get("max_retries", 5)),
+            "force_valid": bool(config.get("force_valid", False)),
+            "force_unique": bool(config.get("force_unique", False)),
             "prompts_path": resolve_deps_path("external", "In-Context-Symbolic-Regression", "prompts"),
-            "max_points_in_prompt": int(wrapper_cfg.get("max_points_in_prompt", 40)),
-            "checkpoints": list(wrapper_cfg.get("checkpoints", [])),
+            "max_points_in_prompt": int(config.get("max_points_in_prompt", 40)),
+            "checkpoints": list(config.get("checkpoints", [])),
             "device": "cpu",
             "use_bfloat16": False,
-            "seed": int(wrapper_cfg.get("seed", 42)),
+            "seed": int(config.get("seed", 42)),
             "root": ROOT_DIR,
             "plotter": {
                 "save_video": False,
@@ -242,47 +253,47 @@ def build_cfg(wrapper_cfg, function_id, meta, data_folder_rel):
                 "run_id": "wrapper",
             },
             "model": {
-                "name": str(wrapper_cfg.get("model_name", "gpt-4o-mini")),
+                "name": str(config.get("model_name", "gpt-4o-mini")),
                 "tokenizer_pad": "\\[PAD\\]",
                 "tokenizer_padding_side": "left",
                 "visual": False,
                 "cache_dir": "",
                 "seed_function_prompt": "seed_functions/generate_seed.txt",
-                "max_new_tokens": int(wrapper_cfg.get("max_new_tokens", 2048)),
-                "top_p": float(wrapper_cfg.get("top_p", 0.9)),
-                "top_k": int(wrapper_cfg.get("top_k", 60)),
-                "num_beams": int(wrapper_cfg.get("num_beams", 1)),
-                "temperature": float(wrapper_cfg.get("temperature", 1.0)),
-                "temperature_schedule": bool(wrapper_cfg.get("temperature_schedule", False)),
-                "temperature_schedule_gamma": float(wrapper_cfg.get("temperature_schedule_gamma", 0.995)),
+                "max_new_tokens": int(config.get("max_new_tokens", 2048)),
+                "top_p": float(config.get("top_p", 0.9)),
+                "top_k": int(config.get("top_k", 60)),
+                "num_beams": int(config.get("num_beams", 1)),
+                "temperature": float(config.get("temperature", 1.0)),
+                "temperature_schedule": bool(config.get("temperature_schedule", False)),
+                "temperature_schedule_gamma": float(config.get("temperature_schedule_gamma", 0.995)),
                 "base_prompt": {
                     "prompt": "basic_text.txt",
-                    "prompt_size": int(wrapper_cfg.get("prompt_size", 5)),
+                    "prompt_size": int(config.get("prompt_size", 5)),
                 },
             },
             "experiment": {
                 "generate_seed_functions": True,
                 "optimizer": {
-                    "optimizer_threads": int(wrapper_cfg.get("optimizer_threads", 5)),
-                    "timeout": int(wrapper_cfg.get("optimizer_timeout", 10)),
-                    "p0_min": float(wrapper_cfg.get("optimizer_p0_min", -5)),
-                    "p0_max": float(wrapper_cfg.get("optimizer_p0_max", 5)),
-                    "coeff_rounding": int(wrapper_cfg.get("optimizer_coeff_rounding", 4)),
-                    "tol": float(wrapper_cfg.get("optimizer_tol", 1e-3)),
+                    "optimizer_threads": int(config.get("optimizer_threads", 5)),
+                    "timeout": int(config.get("optimizer_timeout", 10)),
+                    "p0_min": float(config.get("optimizer_p0_min", -5)),
+                    "p0_max": float(config.get("optimizer_p0_max", 5)),
+                    "coeff_rounding": int(config.get("optimizer_coeff_rounding", 4)),
+                    "tol": float(config.get("optimizer_tol", 1e-3)),
                 },
                 "seed_functions": {
                     "functions": [],
-                    "max_tries": int(wrapper_cfg.get("seed_generation_max_tries", 10)),
-                    "generation_tokens": int(wrapper_cfg.get("seed_generation_tokens", 512)),
+                    "max_tries": int(config.get("seed_generation_max_tries", 10)),
+                    "generation_tokens": int(config.get("seed_generation_tokens", 512)),
                 },
                 "scorer": {
-                    "name": str(wrapper_cfg.get("scorer_name", "complexity_scorer")),
-                    "rounding": int(wrapper_cfg.get("scorer_rounding", 8)),
-                    "scientific": bool(wrapper_cfg.get("scorer_scientific", False)),
-                    "normalize": bool(wrapper_cfg.get("scorer_normalize", False)),
-                    "lambda": float(wrapper_cfg.get("scorer_lambda", 0.05)),
-                    "max_nodes": int(wrapper_cfg.get("scorer_max_nodes", 30)),
-                    "alternative": bool(wrapper_cfg.get("scorer_alternative", False)),
+                    "name": str(config.get("scorer_name", "complexity_scorer")),
+                    "rounding": int(config.get("scorer_rounding", 8)),
+                    "scientific": bool(config.get("scorer_scientific", False)),
+                    "normalize": bool(config.get("scorer_normalize", False)),
+                    "lambda": float(config.get("scorer_lambda", 0.05)),
+                    "max_nodes": int(config.get("scorer_max_nodes", 30)),
+                    "alternative": bool(config.get("scorer_alternative", False)),
                 },
                 "function": {
                     "name": f"func{function_id}",
@@ -296,9 +307,9 @@ def build_cfg(wrapper_cfg, function_id, meta, data_folder_rel):
                         "max_points": 1,
                         "num_points": 0,
                     },
-                    "tolerance": float(wrapper_cfg.get("tolerance", 0.99999)),
+                    "tolerance": float(config.get("tolerance", 0.99999)),
                     "num_variables": int(meta["n_variables"]),
-                    "iterations": int(wrapper_cfg.get("iterations", 10)),
+                    "iterations": int(config.get("iterations", 10)),
                 },
             },
         }
@@ -324,8 +335,8 @@ def evaluate_best_function(icsr_utils, best_function_str, x_train, y_train, x_te
     return mse(y_train, train_pred), mse(y_test, test_pred)
 
 
-def train_one(function_id, metadata, wrapper_cfg):
-    api_key, api_base_url = prepare_api_environment(wrapper_cfg)
+def train_one(function_id, metadata, config):
+    api_key, api_base_url = prepare_api_environment(config)
     if not api_key:
         raise RuntimeError(
             "ICSR uses the OpenAI model path by default, but no API key was found in "
@@ -334,9 +345,9 @@ def train_one(function_id, metadata, wrapper_cfg):
 
     Workspace, icsr_utils = import_icsr_modules()
     patch_openai_model()
-    patch_utils_load_model(icsr_utils, wrapper_cfg)
-    dataset_root = resolve_path(wrapper_cfg["DATASET_PATH"])
-    output_root = resolve_path(wrapper_cfg["OUTPUT_PATH"])
+    patch_utils_load_model(icsr_utils, config)
+    dataset_root = resolve_path(config["DATASET_PATH"])
+    output_root = resolve_path(config["OUTPUT_PATH"])
     func_output_dir = os.path.join(output_root, f"func{function_id}")
     raw_input_dir = os.path.join(func_output_dir, "raw_inputs")
     ensure_output_dir(raw_input_dir)
@@ -346,11 +357,12 @@ def train_one(function_id, metadata, wrapper_cfg):
         dataset_root=dataset_root,
         function_id=function_id,
         n_variables=meta["n_variables"],
+        meta_entry=meta,
     )
     save_points(raw_input_dir, x_train, y_train, x_test, y_test)
 
     cfg = build_cfg(
-        wrapper_cfg=wrapper_cfg,
+        config=config,
         function_id=function_id,
         meta=meta,
         data_folder_rel=to_repo_relative(raw_input_dir),
@@ -424,8 +436,8 @@ def parse_args():
 
 def main():
     args = parse_args()
-    wrapper_cfg = load_yaml(resolve_path(args.config))
-    metadata = load_metadata(resolve_path(wrapper_cfg["BENCHMARK_METADATA_PATH"]))
+    config = load_yaml(resolve_path(args.config))
+    metadata = load_metadata(resolve_path(config["BENCHMARK_METADATA_PATH"]))
 
     if args.all:
         function_ids = sorted(metadata.keys())
@@ -436,7 +448,7 @@ def main():
     else:
         raise ValueError("Please provide --function-id N or use --all.")
 
-    output_root = resolve_path(wrapper_cfg["OUTPUT_PATH"])
+    output_root = resolve_path(config["OUTPUT_PATH"])
     ensure_output_dir(output_root)
     summary_path = os.path.join(output_root, "summary.jsonl")
 
@@ -444,7 +456,7 @@ def main():
     try:
         for function_id in function_ids:
             print(f"[ICSR] Running func{function_id} ({metadata[function_id]['name']})")
-            result = train_one(function_id=function_id, metadata=metadata, wrapper_cfg=wrapper_cfg)
+            result = train_one(function_id=function_id, metadata=metadata, config=config)
             all_results.append(result)
             print(
                 f"[ICSR] func{function_id} done | "

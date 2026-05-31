@@ -1,0 +1,9 @@
+### Problem Task
+Find the mathematical function skeleton that represents acceleration in a damped nonlinear oscillator system with driving force, given data for position and velocity.
+
+### Equation Input Specification
+- x: Observations of current position
+- v: Observations of velocity
+
+### Equation Output Specification
+a: Acceleration computed from the function

@@ -1,0 +1,11 @@
+### Problem Task
+Find the mathematical function skeleton that represents Escherichia coli bacterial growth rate, given data on population density, substrate concentration, temperature, and pH.
+
+### Equation Input Specification
+- b: Observations of population density
+- s: Observations of substrate concentration
+- temp: Observations of temperature
+- pH: Observations of pH level
+
+### Equation Output Specification
+r: Bacterial growth rate

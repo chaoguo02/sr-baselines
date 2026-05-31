@@ -1,0 +1,9 @@
+### Problem Task
+Discover a mathematical function skeleton for population dynamics. Model the population growth rate as a function of time and the current population.
+
+### Equation Input Specification
+- t: Time
+- P: Population at time t
+
+### Equation Output Specification
+dP_dt: Population growth rate
