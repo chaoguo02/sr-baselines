@@ -1,4 +1,5 @@
-"""Run all baselines across multiple benchmark functions with multiple independent runs.
+"""
+Run all baselines across multiple benchmark functions with multiple independent runs.
 
 Usage:
     python run_all_baselines.py                           # all baselines, func1-10, 10 runs each
@@ -38,34 +39,12 @@ def load_metadata(path):
     return {int(row["function_id"]): row for row in rows}
 
 
-def ensure_dir(path):
-    os.makedirs(path, exist_ok=True)
-
-
-# ---------------------------------------------------------------------------
-# Baseline registry
-# ---------------------------------------------------------------------------
-
 BASELINES = {}
 
 
 def register(name, import_module, train_one_name, config_path, seed_key,
              align_overrides=None, setup_fn=None, uses_bracket_access=False,
              no_seed_warning=False):
-    """Register a baseline for the multi-run launcher.
-
-    Parameters
-    ----------
-    name : str                e.g. "gplearn"
-    import_module : str       fully qualified module path, e.g. "gplearn.run_gplearn_benchmark"
-    train_one_name : str      function name inside module, e.g. "train_one"
-    config_path : str         relative path from ROOT_DIR to default config YAML
-    seed_key : str or None    config dict key for seed, or None if unsupported
-    align_overrides : dict    config overrides to align with main experiment
-    setup_fn : callable or None   optional function(config) called before each run
-    uses_bracket_access : bool    if True, use config["key"] instead of config.get("key")
-    no_seed_warning : bool    if True, warn at import that seeding is not supported
-    """
     BASELINES[name] = {
         "import_module": import_module,
         "train_one_name": train_one_name,
@@ -79,22 +58,20 @@ def register(name, import_module, train_one_name, config_path, seed_key,
 
 
 def _resolve_pysr_env(config):
-    """Preprare Julia runtime for PySR before calling train_one."""
-    # Deferred import to avoid julia deps until needed
     from wrappers.pysr.run import prepare_runtime_env
     prepare_runtime_env(config)
 
 
-# --- Register all 9 baselines ---
+# --- Register all 9 baselines (align_overrides match main experiment) ---
 
 register(
     name="gplearn",
-    import_module="run_gplearn_benchmark",   # run_gplearn_benchmark.py in gplearn/ subdir
+    import_module="run_gplearn_benchmark",
     train_one_name="train_one",
     config_path=os.path.join("gplearn", "config_gplearn.yml"),
     seed_key="seed",
     uses_bracket_access=True,
-    align_overrides={},
+    align_overrides={"population_size": 100, "tournament_size": 3, "generations": 50},
 )
 
 register(
@@ -103,7 +80,7 @@ register(
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "icsr", "config.yml"),
     seed_key="seed",
-    align_overrides={},
+    align_overrides={"iterations": 50},
 )
 
 register(
@@ -113,7 +90,7 @@ register(
     config_path=os.path.join("wrappers", "llm_sr", "config.yml"),
     seed_key=None,
     no_seed_warning=True,
-    align_overrides={},
+    align_overrides={"max_sample_nums": 100},
 )
 
 register(
@@ -122,7 +99,7 @@ register(
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "sr_llm", "config.yml"),
     seed_key="seed",
-    align_overrides={},
+    align_overrides={"n_epochs": 50},
 )
 
 register(
@@ -131,7 +108,7 @@ register(
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "lasr", "config.yml"),
     seed_key="seed",
-    align_overrides={},
+    align_overrides={"niterations": 50, "populations": 100},
 )
 
 register(
@@ -140,7 +117,7 @@ register(
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "pysr", "config.yml"),
     seed_key="seed",
-    align_overrides={"population_size": 500},
+    align_overrides={"population_size": 100, "niterations": 50},
     setup_fn=_resolve_pysr_env,
 )
 
@@ -150,7 +127,7 @@ register(
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "gp_gomea", "config.yml"),
     seed_key="seed",
-    align_overrides={},
+    align_overrides={"generations": 50, "popsize": 100},
 )
 
 register(
@@ -170,7 +147,6 @@ register(
     seed_key="seed",
     align_overrides={},
 )
-
 
 def import_train_one(info):
     """Dynamically import and return (train_one_fn, metadata_loader, yaml_loader, path_resolver)."""
