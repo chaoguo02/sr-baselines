@@ -80,7 +80,7 @@ register(
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "icsr", "config.yml"),
     seed_key="seed",
-    align_overrides={"iterations": 50},
+    align_overrides={},
 )
 
 register(
@@ -90,7 +90,7 @@ register(
     config_path=os.path.join("wrappers", "llm_sr", "config.yml"),
     seed_key=None,
     no_seed_warning=True,
-    align_overrides={"max_sample_nums": 100},
+    align_overrides={},
 )
 
 register(
@@ -99,7 +99,7 @@ register(
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "sr_llm", "config.yml"),
     seed_key="seed",
-    align_overrides={"n_epochs": 50},
+    align_overrides={},
 )
 
 register(
@@ -108,7 +108,7 @@ register(
     train_one_name="train_one",
     config_path=os.path.join("wrappers", "lasr", "config.yml"),
     seed_key="seed",
-    align_overrides={"niterations": 50, "populations": 100},
+    align_overrides={},
 )
 
 register(
